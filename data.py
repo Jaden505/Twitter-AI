@@ -35,9 +35,11 @@ class Data:
         conn.close()
 
     def shape_data(self):
-        x = self.df.loc[:, ['date', 'text']]
-        x['date'] = x['date'].apply(lambda x: re.search(r'\b\d{2}(?=:)', x).group(0))
-        x['date'] = x['date'].astype('int').values
+        # x = self.df.loc[:, ['date', 'text']]
+        # x['date'] = x['date'].apply(lambda x: re.search(r'\b\d{2}(?=:)', x).group(0))
+        # x['date'] = x['date'].astype('int').values
+        x = self.df['text'].values
+
 
         y = self.df['polarity']
         y = y.astype('int').values
