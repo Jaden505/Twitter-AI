@@ -12,6 +12,7 @@ class Dashboard:
         d = data.Data()
         self.df = d.get_local_data()
         self.selected_user = None
+        self.MAX_USERS = 50
 
         self.display_text()
 
@@ -33,9 +34,9 @@ class Dashboard:
         st.write('Generate a wordcloud from the tweets of a selected user.')
 
     def select_user(self):
-        self.selected_user = st.selectbox('Select a user', self.df['user'].unique()[:10])
+        self.selected_user = st.selectbox('Select a user', self.df['user'].unique()[:self.MAX_USERS], key='user')
 
 if __name__ == '__main__':
-    d = Dashboard()
-    d.select_user()
-    d.generate_wordcloud()
+    dash = Dashboard()
+    dash.select_user()
+    dash.generate_wordcloud()
