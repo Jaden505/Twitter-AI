@@ -2,7 +2,6 @@ import pandas as pd
 import sqlalchemy as db
 from decouple import config
 from sklearn.model_selection import train_test_split
-import re
 
 class Data:
     def __init__(self):
@@ -23,6 +22,8 @@ class Data:
                          encoding='ISO-8859-1')
         self.df.columns = ['polarity', 'id', 'date', 'query', 'user', 'text']
 
+        return self.df
+
     def get_database_data(self):
         ssl = {"ssl": {"ssl_ca": "ca.pem", "ssl_cert": "client-cert.pem", "ssl_key": "client-key.pem"}}
         password = config('MYSQL_OEGE_DATABASE_PASSWORD')
@@ -33,6 +34,8 @@ class Data:
         self.df.columns = ['polarity', 'id', 'date', 'query', 'user', 'text']
 
         conn.close()
+
+        return self.df
 
     def shape_data(self):
         # x = self.df.loc[:, ['date', 'text']]

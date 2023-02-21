@@ -20,7 +20,7 @@ class Models:
         accuracy = clf.score(X_test_vec, y_test)
         print("Accuracy:", accuracy)
 
-        pickle.dump(clf, open('nb_model.sav', 'wb'))
+        pickle.dump(clf, open('models/nb_model.sav', 'wb'))
 
     def random_forest(self):
         # Convert the text data into a matrix of word counts
@@ -36,13 +36,12 @@ class Models:
         accuracy = clf.score(X_test_vec, y_test)
         print("Accuracy:", accuracy)
 
-        pickle.dump(clf, open('rf_model.sav', 'wb'))
+        pickle.dump(clf, open('models/rf_model.sav', 'wb'))
 
 if __name__ == '__main__':
     d = Data()
     d.get_local_data()
     X_train, X_test, y_train, y_test = d.shape_data()
 
-    m = Models()
     # m.naive_bayes()
-    m.random_forest()
+    # m.random_forest()
