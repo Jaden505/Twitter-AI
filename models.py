@@ -24,7 +24,7 @@ class Models:
 
         self.evaluate(clf, X_test_vec, y_test)
 
-        pickle.dump(clf, open('models/nb_model.sav', 'wb'))
+        # pickle.dump(clf, open('models/nb_model.sav', 'wb'))
 
     def random_forest(self):  # 0.63 accuracy
         # Convert the text data into a matrix of word counts
@@ -61,13 +61,18 @@ class Models:
 
 if __name__ == '__main__':
     d = Data()
-    d.get_local_data()
-    X_train, X_test, y_train, y_test = d.shape_data()
+    # d.get_local_data()
+    # X_train, X_test, y_train, y_test = d.shape_data()
 
     # data = np.load('trainingandtestdata/shaped_data.npz', allow_pickle=True)
     # X_train, X_test, y_train, y_test = data['X_train'], data['X_test'], data['y_train'], data['y_test']
 
+    d.get_local_data('trainingandtestdata/training.1600000.processed.noemoticon.csv')
+    X_train, y_train = d.shape_data()
+    d.get_local_data('trainingandtestdata/testdata.manual.2009.06.14.csv')
+    X_test, y_test = d.shape_data()
+
     m = Models()
-    m.support_vector_machine()
-    # m.naive_bayes()
+    # m.support_vector_machine()
+    m.naive_bayes()
     # m.random_forest()
