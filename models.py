@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score
 class Models:
     def naive_bayes(self):  # 0.78 accuracy
         # Convert the text data into a matrix of token counts
-        vectorizer = CountVectorizer()
+        vectorizer = TfidfVectorizer()
         X_train_vec = vectorizer.fit_transform(X_train)
 
         clf = MultinomialNB()
@@ -61,16 +61,11 @@ class Models:
 
 if __name__ == '__main__':
     d = Data()
-    # d.get_local_data()
-    # X_train, X_test, y_train, y_test = d.shape_data()
 
-    # data = np.load('trainingandtestdata/shaped_data.npz', allow_pickle=True)
-    # X_train, X_test, y_train, y_test = data['X_train'], data['X_test'], data['y_train'], data['y_test']
-
-    d.get_local_data('trainingandtestdata/training.1600000.processed.noemoticon.csv')
-    X_train, y_train = d.shape_data()
-    d.get_local_data('trainingandtestdata/testdata.manual.2009.06.14.csv')
-    X_test, y_test = d.shape_data()
+    data = np.load('trainingandtestdata/train_data.npz', allow_pickle=True)
+    X_train, y_train = data['X'], data['Y']
+    data = np.load('trainingandtestdata/test_data.npz', allow_pickle=True)
+    X_test, y_test = data['X'], data['Y']
 
     m = Models()
     # m.support_vector_machine()

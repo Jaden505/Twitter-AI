@@ -58,12 +58,15 @@ class Data:
     def shape_data(self, file_name):
         self.df = self.df.sample(frac=1, random_state=42)  # shuffle data
 
-        x = self.df.apply(lambda row: self.process_data(row['text']), axis=1)
+        if file_name == 'test_data':
+            self.df = self.df.loc[self.df['polarity'] != 2]  # remove neutral tweets
+
+        x = self.df['text'].apply(lambda text: self.process_data(text))
 
         y = self.df['polarity']
         y = y.astype('int')
 
-        np.savez(f'trainingandtestdata/{file_name}.npz', X_train=x, X_test=y)
+        np.savez(f'trainingandtestdata/{file_name}.npz', X=x, Y=y)
 
         return x, y
 
