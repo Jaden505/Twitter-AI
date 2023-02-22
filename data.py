@@ -1,13 +1,13 @@
 import pandas as pd
 import sqlalchemy as db
 from decouple import config
-from nltk.tokenize import word_tokenize
 import re
 import numpy as np
 
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from gensim.parsing.preprocessing import STOPWORDS
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 class Data:
     def __init__(self):
@@ -43,26 +43,27 @@ class Data:
 
         return self.df
 
-    def get_stopwords(self):
+    def get_all_stopwords(self):
         nltk_words = set(stopwords.words('english'))
         gensim_words = set(STOPWORDS)
         sklearn_words = set(ENGLISH_STOP_WORDS)
         return list(nltk_words | gensim_words | sklearn_words)
 
-    def process_data(self, x):
-        x = x.lower()  # lowercase
+    def process_data(self, x, lemmatizer):
         x = ' '.join(re.findall('(?<!\S)[a-z-]+(?=[,.!?:;]?(?!\S))', x))  # only keep words containing only letters
-        x = word_tokenize(x)  # tokenize
+        x = x.lower()  # lowercase
+        x = lemmatizer.lemmatize(x)  # lemmatize
 
         return x
 
     def shape_data(self, file_name):
         self.df = self.df.sample(frac=1, random_state=42)  # shuffle data
 
-        # if file_name == 'test_data':
-        #     self.df = self.df.loc[self.df['polarity'] != 2]  # remove neutral tweets
+        if 'test_data' in file_name:
+            self.df = self.df.loc[self.df['polarity'] != 2]  # remove neutral tweets
 
-        x = self.df['text'].apply(lambda text: self.process_data(text))
+        lemmatizer = WordNetLemmatizer()
+        x = self.df['text'].apply(lambda text: self.process_data(text, lemmatizer))
 
         y = self.df['polarity']
         y = y.astype('int')
@@ -77,4 +78,5 @@ if __name__ == '__main__':
     d.get_local_data('trainingandtestdata/training.1600000.processed.noemoticon.csv')
     X_train, y_train = d.shape_data('shaped/train_data')
     d.get_local_data('trainingandtestdata/testdata.manual.2009.06.14.csv')
-    X_test, y_test = d.shape_data('shaped/test_data_with_neutral')
+    X_test, y_test = d.shape_data('shaped/test_data')
+    print(X_test, y_test)

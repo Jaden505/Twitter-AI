@@ -1,5 +1,3 @@
-from data import Data
-
 import pickle
 import numpy as np
 
@@ -13,21 +11,21 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import accuracy_score
 
 class Models:
-    def naive_bayes(self):  # 0.78 accuracy
+    def naive_bayes(self):  # 0.81 accuracy
         # Convert the text data into a matrix of token counts
-        vectorizer = TfidfVectorizer(analyzer=lambda x: x)
-        X_train_vec = vectorizer.fit_transform(X_train).toarray()
+        vectorizer = CountVectorizer()
+        X_train_vec = vectorizer.fit_transform(X_train)
 
-        clf = MultinomialNB()
+        clf = LogisticRegression()
         clf.fit(X_train_vec, y_train)
 
-        X_test_vec = vectorizer.transform(X_test).toarray()
+        X_test_vec = vectorizer.transform(X_test)
 
         self.evaluate(clf, X_test_vec, y_test)
 
         # pickle.dump(clf, open('models/nb_model.sav', 'wb'))
 
-    def random_forest(self):  # 0.63 accuracy
+    def random_forest(self):  # 0.71 accuracy
         # Convert the text data into a matrix of word counts
         vectorizer = CountVectorizer()
         X_train_vec = vectorizer.fit_transform(X_train)
@@ -41,7 +39,7 @@ class Models:
 
         # pickle.dump(clf, open('models/rf_model.sav', 'wb'))
 
-    def support_vector_machine(self):  # 0.73 accuracy
+    def support_vector_machine(self):  # 0.7 accuracy
         sgd = Pipeline([('vect', CountVectorizer()),
                         ('tfidf', TfidfTransformer()),
                         ('clf',
@@ -61,14 +59,10 @@ class Models:
         print("Accuracy:", accuracy)
 
 if __name__ == '__main__':
-    d = Data()
-
     data = np.load('trainingandtestdata/shaped/train_data.npz', allow_pickle=True)
     X_train, y_train = data['X'], data['Y']
-    data = np.load('trainingandtestdata/shaped/test_data_with_neutral.npz', allow_pickle=True)
+    data = np.load('trainingandtestdata/shaped/test_data.npz', allow_pickle=True)
     X_test, y_test = data['X'], data['Y']
-
-    print(X_test, y_test)
 
     m = Models()
     # m.support_vector_machine()
