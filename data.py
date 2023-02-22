@@ -52,14 +52,15 @@ class Data:
     def process_data(self, x):
         x = x.lower()  # lowercase
         x = ' '.join(re.findall('(?<!\S)[a-z-]+(?=[,.!?:;]?(?!\S))', x))  # only keep words containing only letters
+        x = word_tokenize(x)  # tokenize
 
         return x
 
     def shape_data(self, file_name):
         self.df = self.df.sample(frac=1, random_state=42)  # shuffle data
 
-        if file_name == 'test_data':
-            self.df = self.df.loc[self.df['polarity'] != 2]  # remove neutral tweets
+        # if file_name == 'test_data':
+        #     self.df = self.df.loc[self.df['polarity'] != 2]  # remove neutral tweets
 
         x = self.df['text'].apply(lambda text: self.process_data(text))
 
@@ -74,6 +75,6 @@ class Data:
 if __name__ == '__main__':
     d = Data()
     d.get_local_data('trainingandtestdata/training.1600000.processed.noemoticon.csv')
-    X_train, y_train = d.shape_data('train_data')
+    X_train, y_train = d.shape_data('shaped/train_data')
     d.get_local_data('trainingandtestdata/testdata.manual.2009.06.14.csv')
-    X_test, y_test = d.shape_data('test_data')
+    X_test, y_test = d.shape_data('shaped/test_data_with_neutral')

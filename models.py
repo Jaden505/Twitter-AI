@@ -1,11 +1,12 @@
 from data import Data
 
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier
 import pickle
 import numpy as np
 
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -14,13 +15,13 @@ from sklearn.metrics import accuracy_score
 class Models:
     def naive_bayes(self):  # 0.78 accuracy
         # Convert the text data into a matrix of token counts
-        vectorizer = TfidfVectorizer()
-        X_train_vec = vectorizer.fit_transform(X_train)
+        vectorizer = TfidfVectorizer(analyzer=lambda x: x)
+        X_train_vec = vectorizer.fit_transform(X_train).toarray()
 
         clf = MultinomialNB()
         clf.fit(X_train_vec, y_train)
 
-        X_test_vec = vectorizer.transform(X_test)
+        X_test_vec = vectorizer.transform(X_test).toarray()
 
         self.evaluate(clf, X_test_vec, y_test)
 
@@ -38,7 +39,7 @@ class Models:
 
         self.evaluate(clf, X_test_vec, y_test)
 
-        pickle.dump(clf, open('models/rf_model.sav', 'wb'))
+        # pickle.dump(clf, open('models/rf_model.sav', 'wb'))
 
     def support_vector_machine(self):  # 0.73 accuracy
         sgd = Pipeline([('vect', CountVectorizer()),
@@ -62,10 +63,12 @@ class Models:
 if __name__ == '__main__':
     d = Data()
 
-    data = np.load('trainingandtestdata/train_data.npz', allow_pickle=True)
+    data = np.load('trainingandtestdata/shaped/train_data.npz', allow_pickle=True)
     X_train, y_train = data['X'], data['Y']
-    data = np.load('trainingandtestdata/test_data.npz', allow_pickle=True)
+    data = np.load('trainingandtestdata/shaped/test_data_with_neutral.npz', allow_pickle=True)
     X_test, y_test = data['X'], data['Y']
+
+    print(X_test, y_test)
 
     m = Models()
     # m.support_vector_machine()
