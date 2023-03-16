@@ -1,9 +1,8 @@
 import pickle
 import numpy as np
 
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
@@ -16,14 +15,15 @@ class Models:
         vectorizer = CountVectorizer()
         X_train_vec = vectorizer.fit_transform(X_train)
 
-        clf = LogisticRegression()
+        # clf = LogisticRegression()
+        clf = MultinomialNB()
         clf.fit(X_train_vec, y_train)
 
         X_test_vec = vectorizer.transform(X_test)
 
         self.evaluate(clf, X_test_vec, y_test)
 
-        # pickle.dump(clf, open('models/nb_model.sav', 'wb'))
+        pickle.dump(clf, open('models/nb_model.sav', 'wb'))
 
     def random_forest(self):  # 0.71 accuracy
         # Convert the text data into a matrix of word counts
@@ -39,7 +39,7 @@ class Models:
 
         # pickle.dump(clf, open('models/rf_model.sav', 'wb'))
 
-    def support_vector_machine(self):  # 0.7 accuracy
+    def support_vector_machine(self):  # 0.73 accuracy
         sgd = Pipeline([('vect', CountVectorizer()),
                         ('tfidf', TfidfTransformer()),
                         ('clf',
@@ -64,7 +64,9 @@ if __name__ == '__main__':
     data = np.load('trainingandtestdata/shaped/test_data.npz', allow_pickle=True)
     X_test, y_test = data['X'], data['Y']
 
-    m = Models()
+    print(X_train.shape, y_test.shape)
+
+    # m = Models()
     # m.support_vector_machine()
-    m.naive_bayes()
+    # m.naive_bayes()
     # m.random_forest()

@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 
 import data
 
-
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 class Dashboard:
     def __init__(self):
         d = data.Data()
-        self.df = d.get_local_data()
+        self.df = d.get_local_data('trainingandtestdata/testdata.manual.2009.06.14.csv')
         self.selected_user = None
         self.MAX_USERS = 50
 

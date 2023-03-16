@@ -20,12 +20,12 @@ class Data:
                                          'id': db.types.BIGINT(),
                                          'date': db.types.VARCHAR(255),
                                          'query': db.types.VARCHAR(255),
-                                         'user': db.types.VARCHAR(900),
+                                         'user': db.types.VARCHAR(255),
+                                         'text': db.types.VARCHAR(900),
                                      })
 
     def get_local_data(self, path):
-        self.df = pd.read_csv(path, sep=',',
-                         encoding='ISO-8859-1')
+        self.df = pd.read_csv(path, sep=',', encoding='ISO-8859-1')
         self.df.columns = ['polarity', 'id', 'date', 'query', 'user', 'text']
 
         return self.df
@@ -50,7 +50,8 @@ class Data:
         return list(nltk_words | gensim_words | sklearn_words)
 
     def process_data(self, x, lemmatizer):
-        x = ' '.join(re.findall('(?<!\S)[a-z-]+(?=[,.!?:;]?(?!\S))', x))  # only keep words containing only letters
+        # only keep words containing only letters
+        x = ' '.join(re.findall('(?<!\S)[a-z-]+(?=[,.!?:;]?(?!\S))', x))
         x = x.lower()  # lowercase
         x = lemmatizer.lemmatize(x)  # lemmatize
 
@@ -79,4 +80,3 @@ if __name__ == '__main__':
     X_train, y_train = d.shape_data('shaped/train_data')
     d.get_local_data('trainingandtestdata/testdata.manual.2009.06.14.csv')
     X_test, y_test = d.shape_data('shaped/test_data')
-    print(X_test, y_test)
